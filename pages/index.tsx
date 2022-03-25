@@ -1,85 +1,85 @@
+//@ts-nocheck 
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useState } from 'react'
 
-const Home: NextPage = () => {
+
+const api ={
+  key:"ecf17666cc30f448b291b0714a7cfc2a",
+  base:"https://api.openweathermap.org/data/2.5/"
+}
+
+
+function Home(){
+
+  const [query, setQuery] = useState('');
+  const [weather,setWeather] = useState({});
+
+  const search = evt =>{
+    if(evt.key ==="Enter"){
+      fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+       .then(res => res.json())
+       .then(result => {
+         setWeather(result);
+         setQuery('');
+         console.log(result);
+      });
+    }
+  }
+
+  const dateBuilder=(d)=>{
+      let months = ["January","February","March","April","May","June","July","August","September","October","Novembber","December"];
+      let days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+     
+      let day = days[d.getDay()];
+      console.log(d.getDay(),"today-day")
+      console.log(days[d.getDay()])
+      let date =d.getDate();
+      let month = months[d.getMonth()];
+      let year = d.getFullYear();
+      
+      return `${day} ${date} ${month} ${year}`
+  }
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
-    </div>
+     <div className=
+     {(typeof weather?.main != "undefinned") 
+       ? ((weather?.main?.temp > 16) 
+          ? 'app warm' 
+           : 'app') 
+           :  'app'}>
+        <main>
+            <div className='search-box'>
+                <input
+                  type="text" 
+                  className='search-bar'
+                  placeholder='Search...'
+                  onChange={e =>setQuery(e.target.value)}
+                  valu={query}
+                  onKeyPress={search}
+                  />
+            </div>
+            {(typeof weather.main != "undefined") ? (  
+            <div className='location-box'>
+                <div className='location'>
+                 {weather.name},{weather.sys.country}
+                </div>
+                <div className='date'>
+                   {dateBuilder(new Date())}  
+                 </div>  
+                 <div className='weather-box'>
+                    <div className='temp'>
+                      {Math.round(weather.main.temp)}°c
+                    </div>
+                    <div className='weather'>
+                        {weather.weather[(0).main]}
+                    </div>
+                </div> 
+             </div> 
+            ) : ('')}
+        </main>
+     </div>
   )
 }
 
